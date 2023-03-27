@@ -1,0 +1,3 @@
+Mosquitto/log/*
+Mosquitto/data/*
+postgres/*
