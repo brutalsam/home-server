@@ -3,6 +3,7 @@ services:
     mosquitto:
         container_name: mosquitto-mqtt
         image: eclipse-mosquitto
+        restart: unless-stopped
         ports:
             - 1883:1883
             - 9001:9001
@@ -13,7 +14,7 @@ services:
     db:
         container_name: postgres-db
         image: postgres
-        restart: always
+        restart: unless-stopped
         environment:
           - POSTGRES_USER=postgres
           - POSTGRES_PASSWORD=postgres
@@ -22,3 +23,18 @@ services:
           - '5432:5432'
         volumes:
           - ./postgres/data:/var/lib/postgresql/data/
+    plex:
+        image: lscr.io/linuxserver/plex:latest
+        container_name: plex
+        network_mode: host
+        environment:
+          - PUID=1000
+          - PGID=1000
+          - TZ=Etc/UTC
+          - VERSION=docker
+          - PLEX_CLAIM= #optional
+        volumes:
+          - ./media/library:/config
+          - ./media/tvseries:/tv
+          - ./media/movies:/movies
+        restart: unless-stopped
