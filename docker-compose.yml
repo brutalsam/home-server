@@ -38,3 +38,41 @@ services:
           - ./media/tvseries:/tv
           - ./media/movies:/movies
         restart: unless-stopped
+    transmission-openvpn:
+        container_name: transmission-vpn
+        cap_add:
+            - NET_ADMIN
+        restart: unless-stopped
+        volumes:
+            - ./transmission/data:/data
+            - ./transmission/config:/config
+            - ./transmission/cyberghost:/etc/openvpn/custom/
+            - ./transmission/downloads:/downloads
+        environment:
+            - OPENVPN_PROVIDER=CUSTOM
+            - OPENVPN_CONFIG=openvpn
+            - OPENVPN_USERNAME=5Nxvdxh4Cs
+            - OPENVPN_PASSWORD=fEb37txmgk
+            - LOCAL_NETWORK=192.168.0.0/24
+        logging:
+            driver: json-file
+            options:
+                max-size: 10m
+        ports:
+            - '9091:9091'
+        image: haugene/transmission-openvpn
+    sonarr:
+        image: lscr.io/linuxserver/sonarr:latest
+        container_name: sonarr
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=Etc/UTC
+        volumes:
+            - ./sonarr/config:/config
+            - ./media/tvseries:/tv #optional
+            - ./transmission/data/completed:/downloads #optional
+            - ./media:/mnt/media
+        ports:
+            - 8989:8989
+        restart: unless-stopped
