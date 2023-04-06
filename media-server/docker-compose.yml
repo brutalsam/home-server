@@ -1,28 +1,5 @@
 version: "3"
 services:
-    mosquitto:
-        container_name: mosquitto-mqtt
-        image: eclipse-mosquitto
-        restart: unless-stopped
-        ports:
-            - 1883:1883
-            - 9001:9001
-        volumes:
-            - ./Mosquitto/config:/mosquitto/config
-            - ./Mosquitto/data:/mosquitto/data
-            - ./Mosquitto/log:/mosquitto/log
-    db:
-        container_name: postgres-db
-        image: postgres
-        restart: unless-stopped
-        environment:
-          - POSTGRES_USER=postgres
-          - POSTGRES_PASSWORD=postgres
-          # - PGDATA=/var/lib/postgresql/data/db-files/
-        ports:
-          - '5432:5432'
-        volumes:
-          - ./postgres/data:/var/lib/postgresql/data/
     plex:
         image: lscr.io/linuxserver/plex:latest
         container_name: plex
@@ -49,6 +26,8 @@ services:
             - ./transmission/cyberghost:/etc/openvpn/custom/
             - ./transmission/downloads:/downloads
         environment:
+            - PUID=1000
+            - PGID=1000
             - OPENVPN_PROVIDER=CUSTOM
             - OPENVPN_CONFIG=openvpn
             - OPENVPN_USERNAME=5Nxvdxh4Cs
@@ -67,7 +46,7 @@ services:
         environment:
             - PUID=1000
             - PGID=1000
-            - TZ=Etc/UTC
+            - TZ=US/Eastern
         volumes:
             - ./sonarr/config:/config
             - ./media/tvseries:/tv #optional
@@ -75,4 +54,19 @@ services:
             - ./media:/mnt/media
         ports:
             - 8989:8989
+        restart: unless-stopped
+    jackett:
+        image: lscr.io/linuxserver/jackett:latest
+        container_name: jackett
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=Etc/UTC
+            - AUTO_UPDATE=true #optional
+            - RUN_OPTS= #optional
+        volumes:
+            - ./jackett/data:/config
+            - ./transmission/data/completed:/downloads
+        ports:
+            - 9117:9117
         restart: unless-stopped

@@ -1,0 +1,25 @@
+version: "3"
+services:
+    mosquitto:
+        container_name: mosquitto-mqtt
+        image: eclipse-mosquitto
+        restart: unless-stopped
+        ports:
+            - 1883:1883
+            - 9001:9001
+        volumes:
+            - ./Mosquitto/config:/mosquitto/config
+            - ./Mosquitto/data:/mosquitto/data
+            - ./Mosquitto/log:/mosquitto/log
+    db:
+        container_name: postgres-db
+        image: postgres
+        restart: unless-stopped
+        environment:
+          - POSTGRES_USER=postgres
+          - POSTGRES_PASSWORD=postgres
+          # - PGDATA=/var/lib/postgresql/data/db-files/
+        ports:
+          - '5432:5432'
+        volumes:
+          - ./postgres/data:/var/lib/postgresql/data/

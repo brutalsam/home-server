@@ -1,6 +1,7 @@
-Mosquitto/log/*
-Mosquitto/data/*
-postgres/*
-media/*
-sonarr/*
-transmission/*
+dev-server/Mosquitto/log/*
+dev-server/Mosquitto/data/*
+media-server/media/*
+media-server/sonarr/*
+media-server/transmission/*
+media-server/jackett/*
+portainer/data/
