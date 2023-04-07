@@ -24,15 +24,16 @@ services:
             - ./transmission/data:/data
             - ./transmission/config:/config
             - ./transmission/cyberghost:/etc/openvpn/custom/
-            - ./transmission/downloads:/downloads
+            #- ./transmission/downloads:/downloads
         environment:
             - PUID=1000
             - PGID=1000
             - OPENVPN_PROVIDER=CUSTOM
             - OPENVPN_CONFIG=openvpn
-            - OPENVPN_USERNAME=5Nxvdxh4Cs
-            - OPENVPN_PASSWORD=fEb37txmgk
+            - OPENVPN_USERNAME=${VPN_USERNAME}
+            - OPENVPN_PASSWORD=${VPN_PWD}
             - LOCAL_NETWORK=192.168.0.0/24
+#            - TRANSMISSION_DOWNLOAD_DIR=/downloads
         logging:
             driver: json-file
             options:
@@ -50,8 +51,9 @@ services:
         volumes:
             - ./sonarr/config:/config
             - ./media/tvseries:/tv #optional
-            - ./transmission/data/completed:/downloads #optional
-            - ./media:/mnt/media
+            #- ./transmission/data/completed:/downloads #optional
+            - ./transmission/data:/data
+            - ./media:/data/media
         ports:
             - 8989:8989
         restart: unless-stopped
