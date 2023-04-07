@@ -11,9 +11,9 @@ services:
           - VERSION=docker
           - PLEX_CLAIM= #optional
         volumes:
-          - ./media/library:/config
-          - ./media/tvseries:/tv
-          - ./media/movies:/movies
+          - ./plex:/config
+          - ${DATA_FOLDER}/media/tv:/tv
+          - ${DATA_FOLDER}/media/movies:/movies
         restart: unless-stopped
     transmission-openvpn:
         container_name: transmission-vpn
@@ -21,10 +21,10 @@ services:
             - NET_ADMIN
         restart: unless-stopped
         volumes:
-            - ./transmission/data:/data
+            - ${DATA_FOLDER}/torrents:/data/torrents
             - ./transmission/config:/config
-            - ./transmission/cyberghost:/etc/openvpn/custom/
-            #- ./transmission/downloads:/downloads
+            - /home/sam/openvpn:/etc/openvpn/custom/
+            - .${DATA_FOLDER}/downloads:/downloads
         environment:
             - PUID=1000
             - PGID=1000
@@ -33,7 +33,7 @@ services:
             - OPENVPN_USERNAME=${VPN_USERNAME}
             - OPENVPN_PASSWORD=${VPN_PWD}
             - LOCAL_NETWORK=192.168.0.0/24
-#            - TRANSMISSION_DOWNLOAD_DIR=/downloads
+            - TRANSMISSION_DOWNLOAD_DIR=/data/torrents/downloads
         logging:
             driver: json-file
             options:
@@ -50,10 +50,10 @@ services:
             - TZ=US/Eastern
         volumes:
             - ./sonarr/config:/config
-            - ./media/tvseries:/tv #optional
+            - ${DATA_FOLDER}:/data #optional
             #- ./transmission/data/completed:/downloads #optional
-            - ./transmission/data:/data
-            - ./media:/data/media
+            #- ./transmission/data:/data
+            - ./:/data
         ports:
             - 8989:8989
         restart: unless-stopped
@@ -68,7 +68,7 @@ services:
             - RUN_OPTS= #optional
         volumes:
             - ./jackett/data:/config
-            - ./transmission/data/completed:/downloads
+            - ${DATA_FOLDER}/torrents:/downloads
         ports:
             - 9117:9117
         restart: unless-stopped

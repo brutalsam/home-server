@@ -5,3 +5,5 @@ media-server/sonarr/*
 media-server/transmission/*
 media-server/jackett/*
 portainer/data/
+media-server/.env
+media-server/plex/*
