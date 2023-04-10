@@ -7,3 +7,4 @@ media-server/jackett/*
 portainer/data/
 media-server/.env
 media-server/plex/*
+media-server/radarr/*

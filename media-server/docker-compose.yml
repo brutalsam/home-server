@@ -34,6 +34,7 @@ services:
             - OPENVPN_PASSWORD=${VPN_PWD}
             - LOCAL_NETWORK=192.168.0.0/24
             - TRANSMISSION_DOWNLOAD_DIR=/data/torrents/downloads
+            - TRANSMISSION_INCOMPLETE_DIR=/data/torrents/incomplete
         logging:
             driver: json-file
             options:
@@ -50,12 +51,24 @@ services:
             - TZ=US/Eastern
         volumes:
             - ./sonarr/config:/config
-            - ${DATA_FOLDER}:/data #optional
-            #- ./transmission/data/completed:/downloads #optional
-            #- ./transmission/data:/data
-            - ./:/data
+            - ${DATA_FOLDER}:/data
+            - ${DATA_FOLDER}/media/tv:/tv
         ports:
             - 8989:8989
+        restart: unless-stopped
+    radarr:
+        image: lscr.io/linuxserver/radarr:latest
+        container_name: radarr
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=US/Eastern
+        volumes:
+            - ./radarr/config:/config
+            - ${DATA_FOLDER}:/data
+            - ${DATA_FOLDER}/media/movies:/movies
+        ports:
+            - 7878:7878
         restart: unless-stopped
     jackett:
         image: lscr.io/linuxserver/jackett:latest
